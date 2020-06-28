@@ -1,0 +1,6 @@
+/App/config.py
+
+*.sublime-project
+*.sublime-workspace
+
+*.pyc

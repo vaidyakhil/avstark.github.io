@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		{% if title %}
+			{{ title }} - ChatBox
+		{% else %}
+			Welcome to ChatBox
+		{% endif %}
+	</title>
+</head>
+<body>
+
+{% block nav %}
+<ul style="list-style-type: none;">
+	<a href="{{url_for('auth.signup')}}"> <li>Sign Up</li> </a>
+</ul>
+
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+</body>
+
+</html>
