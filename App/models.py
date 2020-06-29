@@ -15,6 +15,8 @@ class User(db.Model):
 
 	password_hash= db.Column(db.String(256))
 
+	gender= db.Column(db.String(8), nullable= False)
+
 	about_me= db.Column(db.String(128))
 
 	sent= db.relationship('Chat', backref= 'author', foreign_keys= 'Chat.sender', lazy= 'dynamic')
@@ -27,11 +29,12 @@ class User(db.Model):
 	def check_password(self, password):
 		return check_password_hash(self.password_hash, password)
 
-	def __init__(self, username, email, password, about_me= None,  *args, **kwargs):
+	def __init__(self, username, email, password, gender, about_me= None,  *args, **kwargs):
 		super(User, self).__init__(*args, **kwargs)
 		self.username= 	username
 		self.email=	email
 		self.set_password(password)
+		self.gender= bool(gender)
 		self.about_me= about_me
 
 	def __repr__(self):

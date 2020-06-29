@@ -6,22 +6,50 @@
 <form action="" method="POST">
 			<label for="name">Username : </label>
 			<br><br>
-			<input type="text" name="username" placeholder="enter username"> *
+			<input type="text" name="username" placeholder="enter username" value="{{user['username']}}"> *
+			{% if errors['username']%}
+				<span style="color: red">{{errors['username']}}</span>
+			{% endif %}
 			<br><br>
 
 			<label for="email">Email : </label>
 			<br><br>
-			<input type="text" name="email"> *
+			<input type="text" name="email" value="{{user['email']}}"> *
+			{% if errors['email']%}
+				<span style="color: red">{{errors['email']}}</span>
+			{% endif %}
 			<br><br>
 
-			<input type="radio" name="gender" value="female"> Female 
-			<input type="radio" name="gender" value="male"> Male 
-			<input type="radio" name="gender" value="others"> Others
+			<label for="password">Password : </label>
+			<br><br>
+			<input type="password" name="password"> *
+			<br><br>
+			{% if user['gender'] and user['gender'] == 'female' %}
+				<input type="radio" name="gender" value="female" checked> Female 
+			{% else %}
+				<input type="radio" name="gender" value="female"> Female 
+			{% endif %}
+
+			{% if user['gender'] and user['gender'] == 'male' %}
+				<input type="radio" name="gender" value="male" checked>Male 
+			{% else %}
+				<input type="radio" name="gender" value="male"> Male 
+			{% endif %}
+
+			{% if user['gender'] and user['gender'] == 'others' %}
+				<input type="radio" name="gender" value="others" checked> Others 
+			{% else %}
+				<input type="radio" name="gender" value="others"> Others 
+			{% endif %}
+
+			{% if errors['gender']%}
+				<span style="color: red">{{errors['gender']}}</span>
+			{% endif %}
 			<br><br>
 
-			<label for="comment">About Us : </label>
+			<label for="about">Few Words about yourself: </label>
 			<br><br>
-			<textarea name="comment" rows="5" cols="40"></textarea>
+			<textarea name="about" rows="5" cols="40" >{{user['about']}}</textarea>
 			<br><br>
 
 			<input type="submit" name="submit" value="submit">
