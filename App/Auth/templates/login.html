@@ -1,0 +1,19 @@
+{# <span class= "error" id="name_error"></span> #}
+
+{% extends 'base.html' %}
+
+{% block content %}
+<form action="" method="POST">
+			<label for="name">Username : </label>
+			<br><br>
+			<input type="text" name="username" placeholder="enter username">
+			<br><br>
+
+			<label for="password">Password : </label>
+			<br><br>
+			<input type="password" name="password">
+			<br><br>
+
+			<input type="submit" name="submit" value="submit">
+	</form>
+{% endblock %}
