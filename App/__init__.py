@@ -19,4 +19,7 @@ def create_app(config_class= Config):
 	from App.Auth import auth_bp
 	app.register_blueprint(auth_bp, url_prefix= '/auth')
 
+	from App.Messenger import bp
+	app.register_blueprint(bp)
+
 	return app

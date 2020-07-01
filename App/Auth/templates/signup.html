@@ -1,5 +1,3 @@
-{# <span class= "error" id="name_error"></span> #}
-
 {% extends 'base.html' %}
 
 {% block content %}
@@ -24,6 +22,7 @@
 			<br><br>
 			<input type="password" name="password"> *
 			<br><br>
+			
 			{% if user['gender'] and user['gender'] == 'female' %}
 				<input type="radio" name="gender" value="female" checked> Female 
 			{% else %}

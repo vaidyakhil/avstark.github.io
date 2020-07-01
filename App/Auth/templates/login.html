@@ -1,5 +1,3 @@
-{# <span class= "error" id="name_error"></span> #}
-
 {% extends 'base.html' %}
 
 {% block content %}
@@ -8,12 +6,19 @@
 			<br><br>
 			<input type="text" name="username" placeholder="enter username">
 			<br><br>
-
+			{% if errors['username']%}
+				<span style="color: red">{{errors['username']}}</span>
+			{% endif %}
+			<br><br>
+			
 			<label for="password">Password : </label>
 			<br><br>
 			<input type="password" name="password">
 			<br><br>
-
+			{% if errors['username']%}
+				<span style="color: red">{{errors['username']}}</span>
+			{% endif %}
+			<br><br>
 			<input type="submit" name="submit" value="submit">
 	</form>
 {% endblock %}
