@@ -1,9 +1,58 @@
 from App import db
-from App.Auth import auth_bp
+from App.Auth import auth_bp 
 from flask import render_template, redirect, flash, url_for, request, session, g
 from App.models import User, Chat
 from . import form_validations as fv 
 import functools
+from .email import password_reset_email
+
+@auth_bp.route('/reset_password/<token>', methods= ('GET', 'POST'))
+def reset_password(token):
+	if g.user:
+		flash("You are already logged in!")
+		return redirect(url_for('messenger.index'))
+
+	id= User.verify_token(token)
+	if id is None:
+		flash("Either the reset password mail expired or something else went down. Please try again")
+		return redirect(url_for('auth.reset_password_request'))
+	
+	new_password= ""
+	error= None
+	if request.method == 'POST':
+		user= User.query.filter_by(id = id).first()
+		new_password= request.form['new_password']
+		error= fv.data_required(new_password, "password")
+		if error is None:
+			user.set_password(new_password)
+			db.session.commit()
+			flash("Your password has been successfully reset.")
+			return redirect(url_for('auth.login'))
+
+	return render_template('Auth/reset_password.html', error= error, new_password= new_password)
+
+@auth_bp.route('/reset_password_request', methods= ('GET', 'POST'))
+def reset_password_request():
+	if g.user:
+		flash("You are already logged in!")
+		return redirect(url_for('messenger.index'))
+
+	error= None
+	credential= ""
+	if request.method == 'POST':
+		credential= request.form['credential']
+		
+		error= fv.data_required(credential)
+		if error is None:
+			flash("a recovery email is sent with further instructions.")
+			user= User.query.filter_by(email = credential).first()
+			if user is None:
+				user= User.query.filter_by(username = credential).first()
+			if user is not None:
+				password_reset_email(user)
+			return redirect(url_for('auth.login'))
+
+	return render_template('Auth/reset_password_request.html', title= 'Sign Up', error= error, credential= credential)
 
 @auth_bp.route('/signup', methods= ('GET', 'POST'))
 def signup():
@@ -28,7 +77,7 @@ def signup():
 		errors['username']= fv.data_required(user['username'], 'username')
 		errors['email']= fv.validate_email(user['email'], 'email')
 		errors['password']= fv.data_required(password, password)
-		if errors['username'] is None and errors['email'] is None and errors['password'] is None:
+		if errors['username'] is None and errors['email'] is None and errors['password'] is None and errors['gender'] is None:
 			
 			u= User.query.filter(User.username == user['username']).first()
 			if u is not None:
@@ -64,7 +113,7 @@ def login():
 		errors['username']= fv.data_required(username, 'username')
 		errors['password']= fv.data_required(password, 'password')
 		
-		if username is not None and password is not None:
+		if errors["username"] is None and errors["password"] is None:
 			u= User.query.filter(User.username == username).first()
 			if u is not None:
 				check= u.check_password(password)

@@ -1,6 +1,14 @@
 from App import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from time import time
+from flask import current_app
+import jwt
+
+friends_table= db.table(
+	db.Column('user1_id', db.Integer, db.ForeignKey('user.id')),
+	db.Column('user2_id', db.Integer, db.ForeignKey('user.id'))
+)
 
 class User(db.Model):
 	"""id, name, email-address, password_hash, about_me"""
@@ -19,6 +27,8 @@ class User(db.Model):
 
 	about_me= db.Column(db.String(128))
 
+	# verified= db.Column(db.Boolean, default= False)
+	
 	sent= db.relationship('Chat', backref= 'author', foreign_keys= 'Chat.sender', lazy= 'dynamic')
 
 	received= db.relationship('Chat', backref= 'recipient', foreign_keys= 'Chat.receiver', lazy= 'dynamic')
@@ -36,7 +46,22 @@ class User(db.Model):
 		self.set_password(password)
 		self.gender= bool(gender)
 		self.about_me= about_me
+		
+	def get_token(self):
+		return jwt.encode(
+			{'token': self.id, 'exp': time() + current_app.config['EMAIL_EXPIRY']},
+			current_app.config['SECRET_KEY'], 
+			algorithm='HS256'
+			).decode('utf-8')
 
+	@staticmethod 
+	def verify_token(token):
+		try:
+			id= jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['token']
+		except:
+			return 	
+		return id
+		
 	def __repr__(self):
 		return 'User object: id {} username {}'.format(self.id, self.username)
 

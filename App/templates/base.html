@@ -13,9 +13,9 @@
 
 {% block nav %}
 <ul style="list-style-type: none;">
-	<a href="{{url_for('messenger.index')}}"> <li>Home</li></a>
 	{% if g.user %}
-			<a href="{{url_for('auth.logout')}}"> <li>Logout</li> </a>
+		<a href="{{url_for('messenger.index')}}"> <li>Home</li></a>
+		<a href="{{url_for('auth.logout')}}"> <li>Logout</li> </a>
 	{% else %}
 		<a href="{{url_for('auth.signup')}}"> <li>Sign Up</li> </a>
 		<a href="{{url_for('auth.login')}}"> <li>Login</li> </a>
