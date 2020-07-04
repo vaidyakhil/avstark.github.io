@@ -4,7 +4,7 @@ from flask import render_template, redirect, flash, url_for, request, session, g
 from App.models import User, Chat
 from . import form_validations as fv 
 import functools
-from .email import password_reset_email
+from .email import password_reset_email, verify_user_email
 
 @auth_bp.route('/reset_password/<token>', methods= ('GET', 'POST'))
 def reset_password(token):
@@ -44,7 +44,7 @@ def reset_password_request():
 		
 		error= fv.data_required(credential)
 		if error is None:
-			flash("a recovery email is sent with further instructions.")
+			flash("A recovery email is sent to you with further instructions.")
 			user= User.query.filter_by(email = credential).first()
 			if user is None:
 				user= User.query.filter_by(username = credential).first()
@@ -76,8 +76,8 @@ def signup():
 
 		errors['username']= fv.data_required(user['username'], 'username')
 		errors['email']= fv.validate_email(user['email'], 'email')
-		errors['password']= fv.data_required(password, password)
-		if errors['username'] is None and errors['email'] is None and errors['password'] is None and errors['gender'] is None:
+		errors['password']= fv.data_required(password, 'password')
+		if errors['username'] is None and errors['email'] is None and errors['password'] is None:
 			
 			u= User.query.filter(User.username == user['username']).first()
 			if u is not None:
@@ -95,9 +95,29 @@ def signup():
 					about_me= user['about'])
 				db.session.add(user)
 				db.session.commit()
+				# verify_user_email(user)
+				# flash("An Authentication mail has been sent to you. Please follow the instructions.")
+				# in production uncomment these lines of code
 				return redirect(url_for('auth.login'))
 
 	return render_template('Auth/signup.html', title= 'Sign Up', errors= errors, user= user)
+
+@auth_bp.route('/verify_user<token>')
+def verify_user(token):
+	if g.user:
+		flash("You are already logged in!")
+		return redirect(url_for('messenger.index'))
+
+	id= User.verify_token(token)
+	if id is None:
+		flash("something went wrong. Please try again")
+		return redirect(url_for('auth.signup'))
+
+	user= User.query.filter_by(id = id).first()
+	user.verified= True
+	db.session.commit()
+	flash("You have been autheticated successfully. Welcome to chatbox.")
+	return redirect(url_for('auth.login'))
 
 
 @auth_bp.route('/login', methods= ('GET', 'POST'))
@@ -118,9 +138,13 @@ def login():
 			if u is not None:
 				check= u.check_password(password)
 				if check:
-					session.clear()
-					session['user_id']= u.id
-					return redirect(url_for('messenger.index'))
+					if u.verified:
+						session.clear()
+						session['user_id']= u.id
+						return redirect(url_for('messenger.index'))
+					else:
+						flash("Authentication Incomplete! Please follow the instructions in your signup email.")
+						return redirect(url_for('auth.login'))
 
 			flash("Invalid Credentials")		
 

@@ -21,6 +21,9 @@
 			<label for="password">Password : </label>
 			<br><br>
 			<input type="password" name="password"> *
+			{% if errors['password']%}
+				<span style="color: red">{{errors['password']}}</span>
+			{% endif %}
 			<br><br>
 			
 			{% if user['gender'] and user['gender'] == 'female' %}
@@ -53,6 +56,7 @@
 
 			<input type="submit" name="submit" value="submit">
 	</form>
-
+	
+	<br><br>
 	<a href="{{url_for('auth.signup')}}">Already a User</a>
 {% endblock %}

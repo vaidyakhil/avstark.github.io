@@ -1,0 +1,15 @@
+{% block subject %}
+	{{subject}}
+{% endblock %}
+
+
+Dear {{user.username}}, 
+
+To use the ChatBox application click the following link:
+
+{{url_for('auth.verify_user', token= token, _external= True)}}
+
+If you have not requested a sign up please ignore this message.
+
+Sincerely,
+Team ChatBox

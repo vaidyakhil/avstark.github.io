@@ -1,0 +1,14 @@
+<p>Dear {{ user.username }},</p>
+<p>
+    To verify and use the ChatBox application click the following link:
+    <a href="{{ url_for('auth.verify_user', token=token, _external=True) }}">
+        click here
+    </a>
+    {# the _external= True allows the url_for function to generate a abosolute url as opposed to the default behaviour of the function for for relative url. Since this url is accessed outside of the application, it needs to be used.#}
+</p>
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+<p style="text-decoration: none;">{{ url_for('auth.verify_user', token=token, _external=True) }}</p>
+
+<p>If you have not requested a sign up please ignore this message.</p>
+<p>Sincerely,</p>
+<p>The ChatBox Team</p>

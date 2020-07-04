@@ -27,7 +27,8 @@ class User(db.Model):
 
 	about_me= db.Column(db.String(128))
 
-	# verified= db.Column(db.Boolean, default= False)
+	verified= db.Column(db.Boolean, default= True)
+	# in production make the default to false
 	
 	sent= db.relationship('Chat', backref= 'author', foreign_keys= 'Chat.sender', lazy= 'dynamic')
 
