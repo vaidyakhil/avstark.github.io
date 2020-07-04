@@ -48,7 +48,7 @@ def signup():
 				db.session.commit()
 				return redirect(url_for('auth.login'))
 
-	return render_template('signup.html', title= 'Sign Up', errors= errors, user= user)
+	return render_template('Auth/signup.html', title= 'Sign Up', errors= errors, user= user)
 
 
 @auth_bp.route('/login', methods= ('GET', 'POST'))
@@ -75,7 +75,7 @@ def login():
 
 			flash("Invalid Credentials")		
 
-	return render_template('login.html', title= 'Login', errors= errors)
+	return render_template('Auth/login.html', title= 'Login', errors= errors)
 
 @auth_bp.route('/logout')
 def logout():

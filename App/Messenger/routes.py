@@ -8,4 +8,10 @@ from App.Auth.routes import login_required
 @bp.route('/', methods= ('GET', ))
 @login_required
 def index():
-	return render_template('index.html')
+	return render_template('Messenger/index.html')
+
+@bp.route('/explore', methods= ('GET', 'POST'))
+@login_required
+def explore():
+	users= User.query.all()
+	return render_template('Messenger/explore.html', users=users)

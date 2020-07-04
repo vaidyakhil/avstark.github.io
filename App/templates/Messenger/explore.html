@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Find people who share your interests and get to know them</h1>
+
+{% for user in users %}
+	{% include 'Messenger/_usercard.html' %}
+{% endfor %}
+
+{% endblock %}
