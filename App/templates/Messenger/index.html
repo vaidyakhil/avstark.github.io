@@ -1,7 +1,29 @@
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'home.css')}}">
+
 {% extends 'base.html' %}
 
 {% block content %}
-{% if g.user %}
-	<h1>Hello {{g.user['username']}}</h1>
-{% endif %}
+<div id="left_content">
+	<img id="profile_photo" src="{{url_for('static', filename= 'images/male_default.png')}}">
+	<div><b>{{current_user.username}}</b></div>
+	<div id="about_me"	class="about">
+	{% if current_user.about_me %}
+	<p>
+		{{current_user.about_me}}
+	</p>
+	{% endif %}
+	</div>
+</div>
+
+<div id="right_content">
+	<div id="heading">
+		<h1>Make new friends as you explore chatbox</h1>	
+	</div>
+
+	<div id="users">
+		{% for user in users %}
+			{% include 'Messenger/_usercard.html' %}
+		{% endfor %}	
+	</div>
+</div>
 {% endblock %}

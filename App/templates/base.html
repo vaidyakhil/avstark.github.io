@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang='en'>
 <head>
 	<title>
 		{% if title %}
@@ -8,30 +8,36 @@
 			Welcome to ChatBox
 		{% endif %}
 	</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content= "width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'base.css')}}">
 </head>
 <body>
 
 {% block nav %}
-<ul style="list-style-type: none;">
+<div id="nav" >
 	{% if g.user %}
-		<a href="{{url_for('messenger.index')}}"> <li>Home</li></a>
-		<a href="{{url_for('auth.logout')}}"> <li>Logout</li> </a>
+		<a href="{{url_for('messenger.index')}}"> Home</a>
+		<a href="{{url_for('messenger.explore')}}">Explore</a>
+		<a class="auth" href="{{url_for('auth.logout')}}">Logout</a>
 	{% else %}
-		<a href="{{url_for('auth.signup')}}"> <li>Sign Up</li> </a>
-		<a href="{{url_for('auth.login')}}"> <li>Login</li> </a>
+		<a class="auth" href="{{url_for('auth.signup')}}">Sign Up</a>
+		<a href="{{url_for('auth.login')}}">Login</a>
 	{% endif %}
-
-</ul>
-
+</div>
 {% endblock %}
 
 <hr>
-<br>
+
 {% for message in get_flashed_messages() %}
 	<div class="flash" style="color: red; text-align: center;">{{ message }}</div>
 {% endfor %}
-{% block content %}
-{% endblock %}
+
+<div id="content">
+	{% block content %}
+	{% endblock %}
+</div>
 
 </body>
 

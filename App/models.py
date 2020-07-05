@@ -5,10 +5,19 @@ from time import time
 from flask import current_app
 import jwt
 
-friends_table= db.table(
-	db.Column('user1_id', db.Integer, db.ForeignKey('user.id')),
-	db.Column('user2_id', db.Integer, db.ForeignKey('user.id'))
-)
+class Friendship(db.Model):
+	__tablename__= "friendship"
+
+	id= db.Column(db.Integer, nullable= False, primary_key= True)
+	from_id= db.Column(db.Integer, db.ForeignKey('user.id'))
+	to_id= db.Column(db.Integer, db.ForeignKey('user.id'))
+	status= db.Column(db.Boolean, default= False)
+	updated= db.Column(db.DateTime, index= True, default= datetime.utcnow)
+
+	__table_args__= (db.UniqueConstraint('from_id', 'to_id', name='relation'),)
+
+	def __repr__(self):
+		return "from {}, to {} status {}".format(self.from_id, self.to_id, self.status)
 
 class User(db.Model):
 	"""id, name, email-address, password_hash, about_me"""
@@ -29,11 +38,94 @@ class User(db.Model):
 
 	verified= db.Column(db.Boolean, default= True)
 	# in production make the default to false
+
+	# profile_picture= db.Column(db.String, nullable= True)
+
+	last_seen= db.Column(db.DateTime, default= datetime.utcnow)
 	
 	sent= db.relationship('Chat', backref= 'author', foreign_keys= 'Chat.sender', lazy= 'dynamic')
 
 	received= db.relationship('Chat', backref= 'recipient', foreign_keys= 'Chat.receiver', lazy= 'dynamic')
 
+	received_requests= db.relationship('User',
+		secondary= 'friendship',
+		primaryjoin= db.and_(Friendship.to_id == id, Friendship.status == False),
+		secondaryjoin= db.and_(Friendship.from_id == id, Friendship.status == False),
+		order_by= Friendship.updated.desc()
+		)
+
+	sent_requests= db.relationship('User',
+		secondary= 'friendship',
+		primaryjoin= db.and_(Friendship.from_id == id, Friendship.status == False),
+		secondaryjoin= db.and_(Friendship.to_id == id, Friendship.status == False),
+		order_by= Friendship.updated.desc()
+		)
+
+	sent_friends=db.relationship('User',
+		secondary= 'friendship',
+		primaryjoin= db.and_(Friendship.from_id == id, Friendship.status == True),
+		secondaryjoin= db.and_(Friendship.to_id == id, Friendship.status == True),
+		order_by= Friendship.updated.desc()
+		)
+
+	received_friends=db.relationship('User',
+		secondary= 'friendship',
+		primaryjoin= db.and_(Friendship.to_id == id, Friendship.status == True),
+		secondaryjoin= db.and_(Friendship.from_id == id, Friendship.status == True),
+		order_by= Friendship.updated.desc()
+		)
+
+	# ---------------------------------------------
+	def check_relation(self, id):
+		friend= Friendship.query.filter((Friendship.from_id == self.id) & (Friendship.to_id == id)).first()
+		if friend is None:
+			friend= Friendship.query.filter((Friendship.from_id == id) & (Friendship.to_id == self.id)).first()
+		return friend
+
+	def all_friends(self):
+		friends= self.sent_friends.copy()
+		friends.extend(self.received_friends)
+		return friends
+
+	def send_request(self, id):
+		friend= self.check_relation(id)
+		if friend is None:
+			db.session.add(Friendship(from_id= self.id, to_id= id))
+			db.session.commit()
+		
+		elif friend.status is False:
+			return "Request is pending."
+
+		else:
+			return "Already Friends."
+
+	def accept_request(self, id):
+		friend= self.check_relation(id)
+		if friend is None:
+			return "Please send a request first!"
+		
+		elif friend.status is False:
+			friend.status= True
+			friend.updated= datetime.utcnow()
+			db.session.commit()
+
+		else:
+			return "Already Friends."
+
+	def unfriend(self, id):
+		friend= self.check_relation(id)
+		if friend is None:
+			return "Please send a request first!"
+		
+		elif friend.status is False:
+			return "request is pending."
+
+		else:
+			db.session.delete(friend)
+			db.session.commit()
+	# ---------------------------------------------
+
+	# ---------------------------------------------
 	def set_password(self, password):
 		self.password_hash= generate_password_hash(password)
 
@@ -47,7 +139,9 @@ class User(db.Model):
 		self.set_password(password)
 		self.gender= bool(gender)
 		self.about_me= about_me
-		
+	# ---------------------------------------------
+
+	# ---------------------------------------------		
 	def get_token(self):
 		return jwt.encode(
 			{'token': self.id, 'exp': time() + current_app.config['EMAIL_EXPIRY']},
@@ -62,7 +156,8 @@ class User(db.Model):
 		except:
 			return 	
 		return id
-		
+	# ---------------------------------------------	
+
 	def __repr__(self):
 		return 'User object: id {} username {}'.format(self.id, self.username)
 
