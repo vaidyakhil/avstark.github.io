@@ -1,0 +1,28 @@
+.form_page{
+	padding: 50px;	
+	padding-top: 20px;
+	width: 330px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-content: center;
+	margin: auto;
+	margin-top: 50px;
+	border: 1px solid black;
+	background-color: white;
+}
+
+#heading{
+	text-align: center;
+}
+
+.form_label{
+	text-transform: capitalize;
+	font-size: large;	
+}
+
+input{
+	padding: 2px 5px 2px 5px;
+	border: 1 px solid #e3e4e6;
+	font-size: small;
+}

@@ -1,47 +1,51 @@
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/form.css')}}">
+
 {% extends 'base.html' %}
 
 {% block content %}
-<form action="" method="POST">
-			<label for="name">Username : </label>
+<div class="form_page">
+	<h2 id="heading">Sign Up</h2>
+	<form action="" method="POST">
+			<label class="form_label" for="name">Username : </label>
 			<br><br>
-			<input type="text" name="username" placeholder="enter username" value="{{user['username']}}"> *
+			<input type="text" name="username" placeholder="Username" value="{{user['username']}}">
 			{% if errors['username']%}
-				<span style="color: red">{{errors['username']}}</span>
+				<span style="color: red">*{{errors['username']}}</span>
 			{% endif %}
 			<br><br>
 
-			<label for="email">Email : </label>
+			<label class="form_label" for="email">Email : </label>
 			<br><br>
-			<input type="text" name="email" value="{{user['email']}}"> *
+			<input type="text" name="email" value="{{user['email']}}" placeholder="Email">
 			{% if errors['email']%}
-				<span style="color: red">{{errors['email']}}</span>
+				<span style="color: red">*{{errors['email']}}</span>
 			{% endif %}
 			<br><br>
 
-			<label for="password">Password : </label>
+			<label class="form_label" for="password">Password : </label>
 			<br><br>
-			<input type="password" name="password"> *
+			<input type="password" name="password"placeholder="Password">
 			{% if errors['password']%}
-				<span style="color: red">{{errors['password']}}</span>
+				<span style="color: red">*{{errors['password']}}</span>
 			{% endif %}
 			<br><br>
 			
 			{% if user['gender'] and user['gender'] == 'female' %}
-				<input type="radio" name="gender" value="female" checked> Female 
+				<input class="form_label" type="radio" name="gender" value="female" checked> Female 
 			{% else %}
-				<input type="radio" name="gender" value="female"> Female 
+				<input class="form_label" type="radio" name="gender" value="female"> Female 
 			{% endif %}
 
 			{% if user['gender'] and user['gender'] == 'male' %}
-				<input type="radio" name="gender" value="male" checked>Male 
+				<input class="form_label" type="radio" name="gender" value="male" checked>Male 
 			{% else %}
-				<input type="radio" name="gender" value="male"> Male 
+				<input class="form_label" type="radio" name="gender" value="male"> Male 
 			{% endif %}
 
 			{% if user['gender'] and user['gender'] == 'others' %}
-				<input type="radio" name="gender" value="others" checked> Others 
+				<input class="form_label" type="radio" name="gender" value="others" checked> Others 
 			{% else %}
-				<input type="radio" name="gender" value="others"> Others 
+				<input class="form_label" type="radio" name="gender" value="others"> Others 
 			{% endif %}
 
 			{% if errors['gender']%}
@@ -51,12 +55,17 @@
 
 			<label for="about">Few Words about yourself: </label>
 			<br><br>
-			<textarea name="about" rows="5" cols="40" >{{user['about']}}</textarea>
+			<textarea autofocus="autofocus" name="about" rows="5" cols="36" maxlength="200" style="resize: none" placeholder="Add a brief introduction to yourself..">
+			{{user['about']}}
+			</textarea>
 			<br><br>
 
-			<input type="submit" name="submit" value="submit">
+			<div style="text-align: center;">
+				<input  type="submit" name="submit" value="Submit">	
+			</div>
 	</form>
 	
 	<br><br>
-	<a href="{{url_for('auth.signup')}}">Already a User</a>
+	<a href="{{url_for('auth.login')}}">Already a User</a>
+</div>
 {% endblock %}

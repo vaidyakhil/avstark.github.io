@@ -1,0 +1,37 @@
+body{
+	background-color: #e8e9eb;
+	margin: 0px;
+}
+
+#logo{
+	width: 30px;
+	height: 30px;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin-right: 5px;
+}
+
+#nav{
+	display: flex;
+	justify-content: flex-start;
+	padding: 5px; 
+	border-bottom: 2px solid #032363;
+	background-color: white;
+	margin: 0;
+}
+#nav a{
+	text-decoration: none;
+	color: #032363;
+	margin-right: 5px;
+	padding: 5px;
+}
+
+#nav a:hover{
+	background-color: #e6ebf5;
+	color: black;
+}
+
+.auth{
+	margin-left: auto;
+}
+

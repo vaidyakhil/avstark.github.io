@@ -82,44 +82,50 @@ class User(db.Model):
 			friend= Friendship.query.filter((Friendship.from_id == id) & (Friendship.to_id == self.id)).first()
 		return friend
 
+	def user_status(self, id):
+		friend =check_relation(id)
+		if friend is None:
+			return 0
+		elif friend.status == False:
+			if friend.from_id == self.id:
+				return 1
+			else:
+				return 2
+		else:
+			return 3
+
 	def all_friends(self):
 		friends= self.sent_friends.copy()
 		friends.extend(self.received_friends)
 		return friends
 
 	def send_request(self, id):
-		friend= self.check_relation(id)
-		if friend is None:
+		check= self.user_status(id)
+		if check == 0:
 			db.session.add(Friendship(from_id= self.id, to_id= id))
 			db.session.commit()
-		
-		elif friend.status is False:
-			return "Request is pending."
-
-		else:
+		elif check == 3:
 			return "Already Friends."
+		else:
+			return "Request is pending."			
 
 	def accept_request(self, id):
-		friend= self.check_relation(id)
-		if friend is None:
+		check= self.user_status(id)
+		if check == 0:
 			return "Please send a request first!"
-		
-		elif friend.status is False:
+		elif check != 3 is False:
 			friend.status= True
 			friend.updated= datetime.utcnow()
 			db.session.commit()
-
 		else:
 			return "Already Friends."
 
 	def unfriend(self, id):
-		friend= self.check_relation(id)
-		if friend is None:
+		check= self.user_status(id)
+		if check == 0:
 			return "Please send a request first!"
-		
-		elif friend.status is False:
+		elif check != 3:
 			return "request is pending."
-
 		else:
 			db.session.delete(friend)
 			db.session.commit()

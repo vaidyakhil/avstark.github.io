@@ -11,12 +11,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content= "width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible">
-	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'base.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/base.css')}}">
 </head>
 <body>
 
 {% block nav %}
 <div id="nav" >
+	<img id="logo" src="{{url_for('static', filename= 'images/icon.png')}}" alt="Cb">
 	{% if g.user %}
 		<a href="{{url_for('messenger.index')}}"> Home</a>
 		<a href="{{url_for('messenger.explore')}}">Explore</a>
@@ -28,17 +29,14 @@
 </div>
 {% endblock %}
 
-<hr>
+<!-- <hr> -->
 
 {% for message in get_flashed_messages() %}
 	<div class="flash" style="color: red; text-align: center;">{{ message }}</div>
 {% endfor %}
 
-<div id="content">
-	{% block content %}
-	{% endblock %}
-</div>
-
+{% block content %}
+{% endblock %}
 </body>
 
 </html>

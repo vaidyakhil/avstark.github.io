@@ -1,30 +1,39 @@
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/form.css')}}">
+
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Login to ChatBox</h2>
-<form action="" method="POST">
-			<label for="name">Username : </label>
-			<br><br>
-			<input type="text" name="username" placeholder="enter username">
-			<br><br>
-			{% if errors['username'] %}
-				<span style="color: red">{{errors['username']}}</span>
-			{% endif %}
-			<br><br>
-			
-			<label for="password">Password : </label>
-			<br><br>
-			<input type="password" name="password">
-			<br><br>
-			{% if errors['password'] %}
-				<span style="color: red">{{errors['password']}}</span>
-			{% endif %}
-			<br><br>
-			<input type="submit" name="submit" value="submit">
-	</form>
+
+<div class="form_page">
 	
-	<br><br>
+	<h2 id="heading">Login to ChatBox</h2>
+	<form action="" method="POST" >
+			<label for="name" class="form_label">Username</label>
+			<br><br>
+			<input type="text" name="username" placeholder="Username">
+			{% if errors['username'] %}
+				<span style="color: red">  *{{errors['username']}}</span>
+			{% endif %}
+			
+			<br><br><br>
+
+			<label class="form_label" for="password">Password</label>
+			<br><br>
+			<input type="password" name="password" placeholder="Password">
+			{% if errors['password'] %}
+				<span style="color: red">  *{{errors['password']}}</span>
+			{% endif %}
+			<br><br><br>
+			<div style="text-align: center;">
+				<input  type="submit" name="submit" value="LOGIN">	
+			</div>
+			
+	</form>
+
 	<a href="{{url_for('auth.signup')}}">New User</a>
 	<br><br>
 	<a href="{{url_for('auth.reset_password_request')}}">Forgot Password</a>
+
+</div>
+
 {% endblock %}

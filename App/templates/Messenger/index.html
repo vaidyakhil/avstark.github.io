@@ -1,12 +1,19 @@
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'home.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/home.css')}}">
+
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/_usercard.css')}}">
 
 {% extends 'base.html' %}
 
 {% block content %}
+<div id="content">
 <div id="left_content">
 	<img id="profile_photo" src="{{url_for('static', filename= 'images/male_default.png')}}">
 	<div><b>{{current_user.username}}</b></div>
 	<div id="about_me"	class="about">
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+		consequat. Duis aute irure dolor in reprehenderit in voluptate velit ess.</p>
 	{% if current_user.about_me %}
 	<p>
 		{{current_user.about_me}}
@@ -17,7 +24,7 @@
 
 <div id="right_content">
 	<div id="heading">
-		<h1>Make new friends as you explore chatbox</h1>	
+		<h1>Welcome {{current_user.username}}</h1>	
 	</div>
 
 	<div id="users">
@@ -25,5 +32,6 @@
 			{% include 'Messenger/_usercard.html' %}
 		{% endfor %}	
 	</div>
+</div>
 </div>
 {% endblock %}
