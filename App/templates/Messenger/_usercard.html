@@ -1,21 +1,34 @@
-<div id="right_content">
-	<div class="user_card">
-		<div class="user_picture">
-			<img class= "user_img" src="{{url_for('static', filename= 'images/female_default.png')}}">
+<div class="user_card">
+	<div class="user_picture">
+		<img id="picture_{{user.id}}"class= "user_img" src="{{url_for('static', filename= 'images/female_default.png')}}">
+	</div>
+	<div class="user_details">
+		<div class="user_detail_upper">
+			<div id="name_{{user.id}}" class="username"> {{user.username}}</div>	
+			{% set check= current_user.user_status(user.id) %} 
+			{% if check == 0 %}
+				<button id= "send_{{user.id}}" class="user_button send_button" onclick= "send_request({{user.id | tojson}} )">
+				 	Send Request
+				</button>
+			{% elif check == 1 %}
+				<button id= "delete_{{user.id}}" class="user_button delete_button" onclick=" delete_request({{user.id | tojson}})"> 
+					Delete Request
+				</button>
+			{% elif check == 2 %}
+				<button id= "accept_{{user.id}}" class="user_button accept_button" onclick=" accept_request({{user.id | tojson}})"> 
+					Accept Request
+				</button>
+				<button id= "delete_{{user.id}}" class="user_button delete_button" onclick=" delete_request({{user.id | tojson}})"> 
+					Delete Request
+				</button>
+			{% endif %}
 		</div>
-		<div class="user_details">
-			<div class="user_detail_upper">
-				<div class="username"> AVSTARK dfsf dfj</div>			
-			</div>
-
-			<div class="user_about">
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-				quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-				consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-			</div>					
-		</div>
-
-	</div>		
-	
-</div>
+		<div id= "about_{{user.id}}"class="user_about">
+			{% if user.about_me %}
+				{{user.about_me}}
+			{% else %}
+				the user has not added his-her info yet
+			{% endif %}
+		</div>					
+	</div>
+</div>		

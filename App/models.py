@@ -83,7 +83,7 @@ class User(db.Model):
 		return friend
 
 	def user_status(self, id):
-		friend =check_relation(id)
+		friend= self.check_relation(id)
 		if friend is None:
 			return 0
 		elif friend.status == False:
@@ -102,33 +102,46 @@ class User(db.Model):
 	def send_request(self, id):
 		check= self.user_status(id)
 		if check == 0:
-			db.session.add(Friendship(from_id= self.id, to_id= id))
-			db.session.commit()
+			try:
+				db.session.add(Friendship(from_id= self.id, to_id= id))
+				db.session.commit()
+			except:
+				return "Something Unexpected Occured"
+			return True
+
 		elif check == 3:
 			return "Already Friends."
 		else:
 			return "Request is pending."			
 
 	def accept_request(self, id):
-		check= self.user_status(id)
-		if check == 0:
+		friend= self.check_relation(id)
+		if friend is None:
 			return "Please send a request first!"
-		elif check != 3 is False:
+		elif friend.status == False:
 			friend.status= True
 			friend.updated= datetime.utcnow()
-			db.session.commit()
+			try:
+				db.session.commit()
+			except:
+				return "Something Unexpected Occured"
+			return True
 		else:
 			return "Already Friends."
 
 	def unfriend(self, id):
-		check= self.user_status(id)
-		if check == 0:
+		# this same method is being userd for delete request
+		friend= self.check_relation(id)
+		if friend is None:
 			return "Please send a request first!"
-		elif check != 3:
-			return "request is pending."
 		else:
-			db.session.delete(friend)
-			db.session.commit()
+			try:
+				db.session.delete(friend)
+				db.session.commit()
+			except:
+				return "Something Unexpected Occured"
+			
+			return True
 	# ---------------------------------------------
 
 	# ---------------------------------------------

@@ -33,7 +33,7 @@
 	margin-left: 10px;
 	margin-top: 10px;
 	height: 20px;
-		/*flex-grow: 1*/
+	flex-grow: 1
 }
 .user_button{
 	font-size: medium;
@@ -42,6 +42,7 @@
 	margin-top: 10px;
 	height: 25px;
 	}
+
 .user_about{
 	/*background-color: red;*/
 	height: 56px;
