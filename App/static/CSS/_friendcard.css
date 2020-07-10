@@ -5,8 +5,13 @@
 	margin-top: 5px;
 	margin-left: 5px;
 	background-color: #b5e0ff;
-	height: 160px;
+	height: 120px;
 	width: 98%;
+}
+
+.user_card:hover{
+	background-color:#6aebcd;
+	color: black;
 }
 
 .user_picture{
@@ -26,21 +31,20 @@
 	flex-direction: column; 
 		flex-grow: 1
 }
-
 .user_detail_upper{
 	display: flex;
 }
-
 .username{
 	font-size: medium;
 	margin-right: auto;
 	margin-left: 10px;
 	margin-top: 10px;
 	height: 20px;
-	flex-grow: 1
+	flex-grow: 1;
+	border: 2px red solid;
 }
-.user_button{
-	font-size: medium;
+.user_last_seen{
+	font-size: small;
 	margin-left: auto;
 	margin-right: 10px;
 	margin-top: 10px;
@@ -49,11 +53,10 @@
 
 .user_about{
 	/*background-color: red;*/
-	height: 45px;
+	height: 56px;
 	overflow: hidden;
 	margin-right: auto;
 	margin-top: auto;
-	padding: 10px;
 	margin-bottom: 10px;
 }
 

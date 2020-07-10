@@ -39,13 +39,13 @@ class User(db.Model):
 	verified= db.Column(db.Boolean, default= True)
 	# in production make the default to false
 
-	# profile_picture= db.Column(db.String, nullable= True)
+	profile_picture= db.Column(db.String, nullable= True)
 
 	last_seen= db.Column(db.DateTime, default= datetime.utcnow)
 	
-	sent= db.relationship('Chat', backref= 'author', foreign_keys= 'Chat.sender', lazy= 'dynamic')
+	# sent= db.relationship('Chat', backref= 'author', foreign_keys= 'Chat.sender', lazy= 'dynamic')
 
-	received= db.relationship('Chat', backref= 'recipient', foreign_keys= 'Chat.receiver', lazy= 'dynamic')
+	# received= db.relationship('Chat', backref= 'recipient', foreign_keys= 'Chat.receiver', lazy= 'dynamic')
 
 	received_requests= db.relationship('User',
 		secondary= 'friendship',
@@ -105,8 +105,8 @@ class User(db.Model):
 			try:
 				db.session.add(Friendship(from_id= self.id, to_id= id))
 				db.session.commit()
-			except:
-				return "Something Unexpected Occured"
+			except Exception as e:
+				return e
 			return True
 
 		elif check == 3:
@@ -123,8 +123,8 @@ class User(db.Model):
 			friend.updated= datetime.utcnow()
 			try:
 				db.session.commit()
-			except:
-				return "Something Unexpected Occured"
+			except Exception as e:
+				return e
 			return True
 		else:
 			return "Already Friends."
@@ -138,12 +138,36 @@ class User(db.Model):
 			try:
 				db.session.delete(friend)
 				db.session.commit()
-			except:
-				return "Something Unexpected Occured"
-			
+			except Exception as e:
+				return e
 			return True
 	# ---------------------------------------------
+	def get_chat(self, id):
+		try:
+			chats= Chat.query.filter(db.and_(Chat.sender == self.id, Chat.receiver == id) | db.and_(Chat.sender == id, Chat.receiver == self.id)).order_by(Chat.timestamp).all()
+		except Exception as e:
+			return False
 
+		return chats
+
+	def get_last_message(self, id):
+		last_message= Chat.query.filter(
+			db.and_(Chat.sender == self.id, Chat.receiver == id) | db.and_(Chat.sender == id, Chat.receiver == self.id)
+			).order_by(Chat.timestamp.desc()).first()
+		if last_message is not None:
+			last_message= last_message.serialize()
+		return last_message
+
+	def send_message(self, message, id):
+		chat= Chat(message= message, sender_id= self.id, receiver_id= id);
+		friend= self.check_relation(id);
+		try:
+			friend.updated= datetime.utcnow()
+			db.session.add(chat)
+			db.session.commit()
+		except Exception as e:
+			return False
+		return True
 	# ---------------------------------------------
 	def set_password(self, password):
 		self.password_hash= generate_password_hash(password)
@@ -195,8 +219,14 @@ class Chat(db.Model):
 
 	def __init__(self, message, sender_id, receiver_id, timestamp= datetime.utcnow, *args, **kwargs):
 		self.message= message
-		self.sender_id= sender_id
-		self.receiver_id= receiver_id	
+		self.sender= sender_id
+		self.receiver= receiver_id	
 
+	def serialize(self):
+		return {"sender": self.sender,
+				"receiver": self.receiver,
+				"message": self.message,
+				"timestamp" : self.timestamp}
+				
 	def __repr__(self):
-		return 'Chat object: sender_id {} and receiver_id {}'.format(self.sender_id, self.receiver_id)
+		return 'Chat object: sender {} and receiver {}'.format(self.sender, self.receiver)

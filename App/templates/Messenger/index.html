@@ -1,36 +1,41 @@
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/home.css')}}">
 
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/_usercard.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/_friendcard.css')}}">
+
+{% block scripts %}
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript"  src="{{url_for('static', filename= 'scripts/index.js')}}"></script>
+{% endblock %}
 
 {% extends 'base.html' %}
 
 {% block content %}
 <div id="content">
 <div id="left_content">
-	<img id="profile_photo" src="{{url_for('static', filename= 'images/male_default.png')}}">
-	<div><b>{{current_user.username}}</b></div>
-	<div id="about_me"	class="about">
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit ess.</p>
-	{% if current_user.about_me %}
-	<p>
-		{{current_user.about_me}}
-	</p>
+	{% if current_user.profile_picture %}
+		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/' + current_user.profile_picture)}}">	
+	{% elif current_user.gender == 'female' %}
+		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/female_default.png')}}">
+	{% else %}
+		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/male_default.png')}}">
 	{% endif %}
+	
+	<div style="margin: 10px auto 10px auto;"><b>{{current_user.username}}</b></div>
+
+	<div id="friends">
+		{% for user in users %}
+			{% include 'Messenger/_friendcard.html' %}
+		{% endfor %}	
 	</div>
 </div>
 
 <div id="right_content">
 	<div id="heading">
-		<h1>Welcome {{current_user.username}}</h1>	
+		<h1>Chats</h1>	
 	</div>
-
-	<div id="users">
-		{% for user in users %}
-			{% include 'Messenger/_usercard.html' %}
-		{% endfor %}	
+	<div id="chat" >
+		<img id= "default_chat" src="{{url_for('static', filename= 'images/chat_img.png')}}">
+		<!-- <div style="margin: auto">Tap user to start a chat</div> -->
 	</div>
 </div>
 </div>

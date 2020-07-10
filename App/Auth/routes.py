@@ -5,7 +5,7 @@ from App.models import User, Chat
 from . import form_validations as fv 
 import functools
 from .email import password_reset_email, verify_user_email
-
+from datetime import datetime
 @auth_bp.route('/reset_password/<token>', methods= ('GET', 'POST'))
 def reset_password(token):
 	if g.user:
@@ -163,6 +163,8 @@ def load_user():
 		g.user= None
 	else:
 		g.user= User.query.filter(User.id == user_id).first()
+		g.user.last_seen= datetime.utcnow()
+		db.session.commit()
 
 def login_required(view):
 	@functools.wraps(view)

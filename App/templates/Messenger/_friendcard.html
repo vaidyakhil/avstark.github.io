@@ -1,0 +1,31 @@
+<div class="user_card" onclick="get_chat({{user.id | tojson}})">
+	<div class="user_picture">
+		{% if user.profile_picture %}
+			<img id="picture_{{user.id}}" class= "user_img" src="{{url_for('static', filename= 'images/' + user.profile_picture)}}">
+		{% elif  user.gender == 'female' %}
+			<img id="picture_{{user.id}}" class= "user_img" src="{{url_for('static', filename= 'images/female_default.png')}}">
+		{% else %}
+			<img id="picture_{{user.id}}" class= "user_img" src="{{url_for('static', filename= 'images/male_default.png')}}">
+		{% endif %}
+
+	</div>
+	<div class="user_details">
+		<div class="user_detail_upper">
+			<div id="name_{{user.id}}" class="username"> {{user.username}}</div>
+			<div id="last_seeen{{user.id}}" class="user_last_seen"> {{user.last_seen}}</div>	
+		</div>
+		<div id= "last_message_{{user.id}}" class="user_about">
+			{% if current_user.get_last_message(user.id) %}
+				{% if current_user.get_last_message(user.id)['sender'] == current_user.id %}
+					you: {{current_user.get_last_message(user.id)['message']}}
+				{% else %}
+					user.username: {{current_user.get_last_message(user.id)['message']}} 
+				{% endif %}
+			{% else %}
+				start a conversation
+			{% endif %}
+		</div>					
+	</div>
+</div>		
+
+

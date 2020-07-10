@@ -11,7 +11,14 @@
 {% block content %}
 <div id="content">
 	<div id="left_content">
-		<img id="profile_photo" src="{{url_for('static', filename= 'images/male_default.png')}}">
+	{% if current_user.profile_picture %}
+		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/' + current_user.profile_picture)}}">	
+	{% elif current_user.gender == 'female' %}
+		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/female_default.png')}}">
+	{% else %}
+		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/male_default.png')}}">
+	{% endif %}
+	
 		<div><b>{{current_user.username}}</b></div>
 		<div id="about_me"	class="about">
 		{% if current_user.about_me %}
@@ -20,6 +27,12 @@
 		</p>
 		{% endif %}
 		</div>
+		<form method="POST" action="" enctype="multipart/form-data">
+			<input type="file" name="pic_form" id="pic_form">
+			<textarea name="about_form" value="{{current_user.about_me}}"></textarea>
+			<input type="submit" name="submit" value="update">
+		</form>
+
 	</div>
 
 	<div id="right_content">
