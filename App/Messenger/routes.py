@@ -5,6 +5,7 @@ from App.models import User, Chat
 from App.Auth.routes import login_required
 from flask_socketio import join_room, emit, send, leave_room
 from PIL import Image
+# pillow package to work with images
 import os
 import secrets
 from datetime import datetime
