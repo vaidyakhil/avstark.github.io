@@ -1,1 +1,1 @@
-	web: gunicorn chatbox:app
+web: flask db upgrade; flask translate compile; web: gunicorn chatbox:app
