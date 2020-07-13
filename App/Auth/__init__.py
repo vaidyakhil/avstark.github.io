@@ -2,4 +2,7 @@ from flask import Blueprint
 
 auth_bp= Blueprint('auth', __name__)
 
-from .routes import *
+try:
+	from .routes import *
+except Exception as e:
+	from routes import *

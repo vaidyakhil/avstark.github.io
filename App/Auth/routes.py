@@ -4,7 +4,12 @@ from flask import render_template, redirect, flash, url_for, request, session, g
 from App.models import User, Chat
 from App.Auth import form_validations as fv 
 import functools
-from App.Auth.email import password_reset_email, verify_user_email
+
+try:
+	from App.Auth.email import password_reset_email, verify_user_email
+except Exception as e:
+	from email import password_reset_email, verify_user_email
+
 from datetime import datetime
 
 @auth_bp.route('/reset_password/<token>', methods= ('GET', 'POST'))
