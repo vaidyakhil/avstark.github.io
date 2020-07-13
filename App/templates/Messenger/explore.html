@@ -1,8 +1,10 @@
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/home.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/explore.css')}}">
 
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/_usercard.css')}}">
 
 {% block scripts %}
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+
 	<script type="text/javascript"  src="{{url_for('static', filename= 'scripts/explore.js')}}"></script>
 {% endblock %}
 
@@ -11,15 +13,8 @@
 {% block content %}
 <div id="content">
 	<div id="left_content">
-	{% if current_user.profile_picture %}
-		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/' + current_user.profile_picture)}}">	
-	{% elif current_user.gender == 'female' %}
-		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/female_default.png')}}">
-	{% else %}
-		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/male_default.png')}}">
-	{% endif %}
-	
-		<div><b>{{current_user.username}}</b></div>
+		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/profile_pictures/' + current_user.profile_picture)}}">	
+		<div id="username">{{current_user.username}}</div>
 		<div id="about_me"	class="about">
 		{% if current_user.about_me %}
 		<p>
@@ -27,17 +22,22 @@
 		</p>
 		{% endif %}
 		</div>
-		<form method="POST" action="" enctype="multipart/form-data">
-			<input type="file" name="pic_form" id="pic_form">
-			<textarea name="about_form" value="{{current_user.about_me}}"></textarea>
-			<input type="submit" name="submit" value="update">
-		</form>
-
+		<div id="edit_form_div">
+			<p style="text-align: center;">Edit Profile</p>
+			<form id="edit_form" method="POST" action="" enctype="multipart/form-data">
+				<label for="pic_form"> Profile Picture</label>
+				<input type="file" name="pic_form" id="pic_form" style="margin: auto;">
+				<br><br>
+				<textarea id="about_form" name="about_form"placeholder="Update your introduction"></textarea>
+				<br><br>
+				<input type="submit" name="submit" value="update">
+			</form>	
+		</div>
 	</div>
 
 	<div id="right_content">
 		<div id="heading">
-			<h1>Explore ChatBox Community</h1>	
+			<h1>ChatBox Community</h1>	
 		</div>
 
 		<div id="users">

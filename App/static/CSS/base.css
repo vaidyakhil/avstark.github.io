@@ -1,6 +1,6 @@
 body{
 	background-color: #e8e9eb;
-	margin: 0px;
+	margin: auto;
 }
 
 #logo{
@@ -35,3 +35,21 @@ body{
 	margin-left: auto;
 }
 
+#content{
+	display: flex;
+	justify-content: center;
+	margin: auto;
+	margin-top: 10px;
+	width: 86%;
+	height: 630; 
+	justify-content: flex-start;
+	border-radius: 20px 20px 20px 20px;
+	/*overflow-y: hidden;*/
+}
+
+@media(max-width: 1200px){
+	#content{
+		width: 98%;
+		margin: auto;
+}
+}

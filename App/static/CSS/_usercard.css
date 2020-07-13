@@ -5,14 +5,15 @@
 	margin-top: 5px;
 	margin-left: 5px;
 	background-color: #b5e0ff;
-	height: 160px;
+	height: 120px;
 	width: 98%;
 }
 
 .user_picture{
 	width: 100px;
 	margin-right: 20px;
-	}
+	align-self: center;
+}
 
 .user_img{
 	width: 60px;
@@ -38,6 +39,7 @@
 	margin-top: 10px;
 	height: 20px;
 	flex-grow: 1
+	font-weight: bold;
 }
 .user_button{
 	font-size: medium;
@@ -47,6 +49,10 @@
 	height: 25px;
 	}
 
+.already_friend{
+	margin-left: auto;
+	margin-top: 10px;
+}
 .user_about{
 	/*background-color: red;*/
 	height: 45px;
@@ -57,7 +63,8 @@
 	margin-bottom: 10px;
 }
 
-@media(max-width: 1100px){
+@media(max-width: 950px){
+
 	.user_picture{
 		width: 60px;
 	}
@@ -67,4 +74,11 @@
 		height: 40px;
 		margin:60px 10px 60px 10px;
 	}	
+
+}
+
+@media(max-width: 700px){
+	.user_card{
+		width: 490px;
+	}
 }

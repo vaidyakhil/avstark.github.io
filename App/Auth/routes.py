@@ -6,6 +6,7 @@ from . import form_validations as fv
 import functools
 from .email import password_reset_email, verify_user_email
 from datetime import datetime
+
 @auth_bp.route('/reset_password/<token>', methods= ('GET', 'POST'))
 def reset_password(token):
 	if g.user:
@@ -69,6 +70,7 @@ def signup():
 		password= request.form['password']
 		try:
 			user['gender']= request.form['gender']
+			print(user['gender'])
 		except Exception as e:
 			errors['gender']= "This field is required"
 

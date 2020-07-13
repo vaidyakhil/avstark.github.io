@@ -21,7 +21,7 @@
 	{% if g.user %}
 		<a href="{{url_for('messenger.index')}}"> Home</a>
 		<a href="{{url_for('messenger.explore')}}">Explore</a>
-		<a class="auth" href="{{url_for('auth.logout')}}">Logout</a>
+		<a id="logout" class="auth" href="{{url_for('auth.logout')}}">Logout</a>
 	{% else %}
 		<a class="auth" href="{{url_for('auth.signup')}}">Sign Up</a>
 		<a href="{{url_for('auth.login')}}">Login</a>

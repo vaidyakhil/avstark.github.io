@@ -11,13 +11,14 @@ mail= Mail()
 socketio= SocketIO()
 
 def create_app(config_class= Config):
-	app= Flask(__name__)
+	app= Flask(__name__, instance_relative_config= True)
+	print(app.instance_path)
 	app.config.from_object(config_class)
 
 	db.init_app(app)
 	migrate.init_app(app, db)
 	mail.init_app(app)
-	# socketio.init_app(app)
+	socketio.init_app(app)
 	
 	with app.app_context():
 		db.create_all()

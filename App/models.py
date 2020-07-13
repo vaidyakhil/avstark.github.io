@@ -34,7 +34,7 @@ class User(db.Model):
 
 	gender= db.Column(db.String(8), nullable= False)
 
-	about_me= db.Column(db.String(128))
+	about_me= db.Column(db.String(160))
 
 	verified= db.Column(db.Boolean, default= True)
 	# in production make the default to false
@@ -42,10 +42,8 @@ class User(db.Model):
 	profile_picture= db.Column(db.String, nullable= True)
 
 	last_seen= db.Column(db.DateTime, default= datetime.utcnow)
-	
-	# sent= db.relationship('Chat', backref= 'author', foreign_keys= 'Chat.sender', lazy= 'dynamic')
 
-	# received= db.relationship('Chat', backref= 'recipient', foreign_keys= 'Chat.receiver', lazy= 'dynamic')
+	# ---------------------------------------------	
 
 	received_requests= db.relationship('User',
 		secondary= 'friendship',
@@ -76,6 +74,37 @@ class User(db.Model):
 		)
 
 	# ---------------------------------------------
+
+	def set_password(self, password):
+		self.password_hash= generate_password_hash(password)
+
+	def check_password(self, password):
+		return check_password_hash(self.password_hash, password)
+
+	def __init__(self, username, email, password, gender, about_me= None,  *args, **kwargs):
+		super(User, self).__init__(*args, **kwargs)
+		self.username= 	username
+		self.email=	email
+		self.set_password(password)
+		self.gender= gender
+		self.about_me= about_me
+		if(gender == "female"):
+			self.profile_picture= "../" + "female_default.png"
+		else:
+			self.profile_picture= "../" + "male_default.png"
+	
+	def serialize(self):
+		return {"id": self.id,
+				"username" : self.username,
+				"email" : self.email,
+				"gender" :self.gender,
+				"about_me" :self.about_me,
+				"verified" :self.verified,
+				"profile_picture" :self.profile_picture,
+				"last_seen" : str(self.last_seen) + 'Z'
+				}		
+	# ---------------------------------------------
+	
 	def check_relation(self, id):
 		friend= Friendship.query.filter((Friendship.from_id == self.id) & (Friendship.to_id == id)).first()
 		if friend is None:
@@ -97,7 +126,7 @@ class User(db.Model):
 	def all_friends(self):
 		friends= self.sent_friends.copy()
 		friends.extend(self.received_friends)
-		return friends
+		return [friend.serialize() for friend in friends]
 
 	def send_request(self, id):
 		check= self.user_status(id)
@@ -106,13 +135,15 @@ class User(db.Model):
 				db.session.add(Friendship(from_id= self.id, to_id= id))
 				db.session.commit()
 			except Exception as e:
-				return e
+				return False
 			return True
 
-		elif check == 3:
-			return "Already Friends."
 		else:
-			return "Request is pending."			
+			return False
+		# elif check == 3:
+		# 	return "Already Friends."
+		# else:
+		# 	return "Request is pending."			
 
 	def accept_request(self, id):
 		friend= self.check_relation(id)
@@ -124,31 +155,35 @@ class User(db.Model):
 			try:
 				db.session.commit()
 			except Exception as e:
-				return e
+				return False
 			return True
 		else:
-			return "Already Friends."
+			return False
+		# else:
+		# 	return "Already Friends."
 
 	def unfriend(self, id):
-		# this same method is being userd for delete request
+		# this same method is being used for delete request
 		friend= self.check_relation(id)
 		if friend is None:
-			return "Please send a request first!"
+			return False
+			# return "Please send a request first!"
 		else:
 			try:
 				db.session.delete(friend)
 				db.session.commit()
 			except Exception as e:
-				return e
+				return False
 			return True
 	# ---------------------------------------------
+
 	def get_chat(self, id):
 		try:
 			chats= Chat.query.filter(db.and_(Chat.sender == self.id, Chat.receiver == id) | db.and_(Chat.sender == id, Chat.receiver == self.id)).order_by(Chat.timestamp).all()
 		except Exception as e:
 			return False
 
-		return chats
+		return [chat.serialize() for chat in chats]
 
 	def get_last_message(self, id):
 		last_message= Chat.query.filter(
@@ -167,24 +202,10 @@ class User(db.Model):
 			db.session.commit()
 		except Exception as e:
 			return False
-		return True
-	# ---------------------------------------------
-	def set_password(self, password):
-		self.password_hash= generate_password_hash(password)
+		return chat.serialize()
 
-	def check_password(self, password):
-		return check_password_hash(self.password_hash, password)
+	# ---------------------------------------------	
 
-	def __init__(self, username, email, password, gender, about_me= None,  *args, **kwargs):
-		super(User, self).__init__(*args, **kwargs)
-		self.username= 	username
-		self.email=	email
-		self.set_password(password)
-		self.gender= bool(gender)
-		self.about_me= about_me
-	# ---------------------------------------------
-
-	# ---------------------------------------------		
 	def get_token(self):
 		return jwt.encode(
 			{'token': self.id, 'exp': time() + current_app.config['EMAIL_EXPIRY']},
@@ -226,7 +247,8 @@ class Chat(db.Model):
 		return {"sender": self.sender,
 				"receiver": self.receiver,
 				"message": self.message,
-				"timestamp" : self.timestamp}
+				"timestamp" : str(self.timestamp) + 'Z'
+				}
 				
 	def __repr__(self):
 		return 'Chat object: sender {} and receiver {}'.format(self.sender, self.receiver)
