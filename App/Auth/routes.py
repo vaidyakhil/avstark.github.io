@@ -8,7 +8,7 @@ import functools
 try:
 	from App.Auth.email import password_reset_email, verify_user_email
 except Exception as e:
-	from email import password_reset_email, verify_user_email
+	from .email import password_reset_email, verify_user_email
 
 from datetime import datetime
 

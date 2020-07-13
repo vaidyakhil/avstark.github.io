@@ -5,4 +5,4 @@ auth_bp= Blueprint('auth', __name__)
 try:
 	from .routes import *
 except Exception as e:
-	from routes import *
+	from App.Auth.routes import *
