@@ -1,5 +1,5 @@
 /App/config.py
-App\static\images\profile_pictures
+App/static/images/profile_pictures
 
 *.sublime-project
 *.sublime-workspace
