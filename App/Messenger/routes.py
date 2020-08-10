@@ -54,8 +54,9 @@ def handle_new_message(data):
 		data['success']= True
 
 	emit('receive message', data, room= data['receiver'])
+	# print('found')
 	emit('new message response', data, room= data['sender'])
-# ------------------------------------------------
+# -------------------------------------------------------------
 
 def save_picture(form_picture, f_ext):
 	random_hex = secrets.token_hex(16)

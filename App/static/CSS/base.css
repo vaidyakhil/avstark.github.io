@@ -1,13 +1,15 @@
 body{
 	background-color: #e8e9eb;
-	margin: auto;
+	margin: 0px;
+	padding: 0px;
+
 }
 
 #logo{
 	width: 30px;
 	height: 30px;
 	padding-left: 5px;
-	padding-right: 5px;
+	padding-right: 5px;	
 	margin-right: 5px;
 }
 
@@ -41,10 +43,9 @@ body{
 	margin: auto;
 	margin-top: 10px;
 	width: 86%;
-	height: 630; 
+	height: 92vh; 
 	justify-content: flex-start;
 	border-radius: 20px 20px 20px 20px;
-	/*overflow-y: hidden;*/
 }
 
 @media(max-width: 1200px){

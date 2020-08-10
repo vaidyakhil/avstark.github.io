@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(){
+	
 	socket= io.connect('http://' + document.domain + ':' + location.port);
-
 	username= document.getElementById('username').innerText.trim();
 	
 	socket.on('connect', function(){
@@ -27,11 +27,35 @@ document.addEventListener('DOMContentLoaded', function(){
 		}
 	})
 
+	socket.on("new message response", (data)=>{
+		console.log("in new message response", data['success']);
+
+		if(data['success']){
+			const message_text= document.getElementById('new_message_text');
+			// console.log(message_text.value);
+			add_messsage(
+				{
+					'message' : message_text.value,
+					'sender' : null,
+					'timestamp' : new Date().toString()
+				}, data['receiver']
+			)
+			message_text.value= "";
+			const friendcard= document.querySelector(`.friendcard[data-id="${data['receiver']}"]`)
+			friendcard.querySelector('.last-message').textContent= 'you: ' + message_text.value;
+		}
+		
+		else{
+			alert("Something unexpected has occured pease refresh the page");
+		}
+	});
+
 	socket.on('receive message', (data)=> {
 		console.log(data);
 		if(data['success']){
-			document.getElementById(`last_message_${data['sender']}`).innerHTML= data['message'];
-			document.getElementById(`last_seen${data['sender']}`).innerText= new Date(data['timestamp']).toLocaleString();
+			const friendcard= document.querySelector(`.friendcard[data-id="${data['sender']}"]`);
+			friendcard.querySelector('.last-message').textContent= data['message'];
+			friendcard.querySelector('.lastseen').textContent= new Date(data['timestamp']).toLocaleString();
 			if(document.getElementById('send') != null){
 				// we are at receiver side
 				if(document.getElementById('send').value == data['sender']){	
@@ -50,26 +74,15 @@ document.addEventListener('DOMContentLoaded', function(){
 		socket.emit('leave', {'name' : username});
 	}
 
-	document.querySelectorAll('.user_card').forEach( (usercard) =>{
-		let id= parseInt(usercard.dataset.id);
+	document.querySelectorAll('.friendcard').forEach( (friendcard) =>{
+		let id= parseInt(friendcard.dataset.id);
 
-		last_seen= document.getElementById(`last_seen${id}`).innerText;
-		document.getElementById(`last_seen${id}`).innerText= new Date(last_seen).toLocaleString();
+		//don't know what
+		last_seen= friendcard.querySelector('.lastseen').textContent;
+		friendcard.querySelector('.lastseen').textContent= new Date(last_seen).toLocaleString();
 
-		usercard.onclick= ()=>{
-			heading= updateHeading(id);
-			
-			unfriend= document.createElement('button');
-			unfriend.innerHTML= "Unfriend"
-			unfriend.onclick= ()=>{
-				name= document.getElementById(`name_${id}`).innerText.trim();
-				confirm(`Are you sure you want to unfriend ${name}`);
-				socket.emit('delete request', {'sender' : username, 'receiver' : id});
-				location.reload();
-			}
-			unfriend.classList.add('button_class')
-			heading.appendChild(unfriend);
-
+		friendcard.addEventListener('click', ()=>{
+			updateHeading(id);
 			get_chat(id);
 			document.getElementById('send').value= id;
 
@@ -82,49 +95,40 @@ document.addEventListener('DOMContentLoaded', function(){
 					'message' : message_text
 				};
 				socket.emit('new message', payload);
-				socket.on("new message response", (data)=>{
-					console.log("in new message response");
-					if(data['success']){
-						document.getElementById('new_message_text').value="";
-						add_messsage(
-							{
-								'message' : message_text,
-								'sender' : null,
-								'timestamp' : new Date().toString()
-							}, id
-						)
-						document.getElementById(`last_message_${id}`).innerHTML= "you" + ':' + message_text;						
-					}
-					
-					else{
-						alert("Something unexpected has occured pease refresh the page");
-					}
-				});
 			}
-		}
-	})
+		}); 
+	});
 });
 
 function updateHeading(id){
-	heading= document.getElementById('heading');
-	heading.innerHTML= "";
-	heading.style.justifyContent = 'flex-start';
+	const heading= document.getElementById('heading');
+	const friendcard= document.querySelector(`.friendcard[data-id="${id}"]`);
+	const src= friendcard.querySelector('img').src;
+	const name= friendcard.querySelector('div.name').textContent;
 
-	src= document.getElementById(`picture_${id}`).src;
-	image= document.createElement('img')
+	heading.textContent= "";
+
+	image= document.createElement('img');
 	image.src= src;
-	image.classList.add('heading_image');
+	image.classList.add('heading-image');
 
-	heading_image_div= document.createElement("div");
-	heading_image_div.classList.add("heading_image_div");
-	heading.appendChild(heading_image_div);
-
-	heading_name= document.createElement('div');
-	heading_name.innerHTML= name;
-	heading_name.classList.add('heading_name');
+	heading_name= document.createElement('span');
+	heading_name.textContent= name;
+	heading_name.classList.add('heading-name');
 	
-	heading.appendChild(heading_name)
-	heading_image_div.appendChild(image)	
+	unfriend= document.createElement('button');
+	unfriend.classList.add('unfriend-button');
+	unfriend.textContent= "Unfriend";	
+	unfriend.addEventListener('click', ()=>{
+		const name= friendcard.querySelector('div.name').textContent.trim();
+		confirm(`Are you sure you want to unfriend ${name}`);
+		socket.emit('delete request', {'sender' : username, 'receiver' : id});
+		location.reload();
+	});
+
+	heading.appendChild(image);
+	heading.appendChild(heading_name);
+	heading.appendChild(unfriend);	
 	
 	return heading;
 }
@@ -169,7 +173,9 @@ function updateScroll(){
 }
 
 function set_up_chat(chat, id){
-	document.getElementById('image_div').style.display = 'none';
+	
+	const img_div= document.getElementById('image_div');
+	img_div.parentNode.removeChild(img_div);
 	document.getElementById('chat_list').style.display= "flex";
 	document.getElementById('chat_list').style.flexDirection = 'column';
 	document.getElementById('chat_list').innerHTML= ''
@@ -210,32 +216,32 @@ function get_chat(id){
 	xhr.send();
 }
 
-function send_message(id){
-		xhr= new XMLHttpRequest();
+// function send_message(id){
+// 		xhr= new XMLHttpRequest();
 
-	url= "/send_message";
-	id= parseInt(document.getElementById("send").value);
-	message= document.getElementById("message_area").value;
-	var params = `message=${message}&id=${id}`;
+// 	url= "/send_message";
+// 	id= parseInt(document.getElementById("send").value);
+// 	message= document.getElementById("message_area").value;
+// 	var params = `message=${message}&id=${id}`;
 
-	xhr.open('POST', url, true);
+// 	xhr.open('POST', url, true);
 
-	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+// 	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-	xhr.onreadystatechange= function(){
-		if(this.readyState == this.DONE && this.status == 200){
-			success= JSON.parse(this.responseText);
-			if(success === true){ 
-				get_chat(id);
-				document.getElementById(`last_message_${id}`).innerHTML= `you: ${message}`	
-			}
-			else{
-				alert(response.success);
-			}
-		}
-		else if(this.status == 404){
-			document.getElementById('about_me').innerHTML = 'Not Found';
-		}
-	}
-	xhr.send(params);
-}
+// 	xhr.onreadystatechange= function(){
+// 		if(this.readyState == this.DONE && this.status == 200){
+// 			success= JSON.parse(this.responseText);
+// 			if(success === true){ 
+// 				get_chat(id);
+// 				document.getElementById(`last_message_${id}`).innerHTML= `you: ${message}`	
+// 			}
+// 			else{
+// 				alert(response.success);
+// 			}
+// 		}
+// 		else if(this.status == 404){
+// 			document.getElementById('about_me').innerHTML = 'Not Found';
+// 		}
+// 	}
+// 	xhr.send(params);
+// }

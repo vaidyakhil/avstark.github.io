@@ -1,11 +1,10 @@
-<div class="user_card">
-	<div class="user_picture">
-		<img id="picture_{{user.id}}" class= "user_img" src="{{url_for('static', filename= 'images/profile_pictures/' + user.profile_picture)}}">
-	</div>
-	<div class="user_details">
-		<div id="user_upper_detail{{user.id}}" class="user_detail_upper">
-			<div id="name_{{user.id}}" class="username"> {{user.username}}</div>	
-			{% set check= current_user.user_status(user.id) %} 
+<div class="usercard">
+	<img class="picture" src="{{url_for('static', filename= 'images/profile_pictures/' + user.profile_picture)}}">
+	
+	<div class="details">
+		<div class="name"> {{user.username}}</div>
+		<div class="buttons">
+			{% set check= current_user.user_status(user.id) %}
 			{% if check == 0 %}
 				<button id= "send_{{user.id}}" class="user_button send_button" value="{{user.id}}">Send Request</button>
 			{% elif check == 1 %}
@@ -13,19 +12,17 @@
 			{% elif check == 2 %}
 				<button id= "accept_{{user.id}}" class="user_button accept_button" value="{{user.id}}">Accept Request</button>
 				<button id= "delete_{{user.id}}" class="user_button delete_button" value="{{user.id}}">Delete Request</button>
-			{% endif %}
-		</div>
-		<div id= "about_{{user.id}}"class="user_about">
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-			tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-			quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-			consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-			cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-			proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			{% endif %}		
+		</div>	
+			 
+		<div class="userabout">
 			{% if user.about_me %}
 				{{user.about_me}}
-			{% else %}
-				the user has not added his-her info yet
+			{% else %}		
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+				quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+				consequat. Duis aute irure dolor in reprehenderit in voluptate velit ese
 			{% endif %}
 		</div>					
 	</div>

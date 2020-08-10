@@ -3,9 +3,8 @@
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename= 'CSS/_friendcard.css')}}">
 
 {% block scripts %}
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js">
-</script>
-	<script type="text/javascript"  src="{{url_for('static', filename= 'scripts/index.js')}}"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript"  src="{{url_for('static', filename= 'scripts/index.js')}}"></script>
 {% endblock %}
 
 {% extends 'base.html' %}
@@ -26,7 +25,7 @@
 </div>
 
 <div id="right_content">
-	<div id="heading">Chats</div>
+	<div id="heading"><div class="heading-name">Chats</div></div>
 	<div id= "chat">
 		<div id="image_div">
 			<img id= "chat_image" src="{{url_for('static', filename= 'images/chat_img.png')}}">

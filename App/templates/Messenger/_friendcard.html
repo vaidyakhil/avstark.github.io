@@ -1,13 +1,11 @@
-<div data-id="{{user.id}}" class="user_card" >
-	<div class="user_picture">
-		<img id="picture_{{user.id}}" class= "user_img" src="{{url_for('static', filename= 'images/profile_pictures/' + user.profile_picture)}}">
-	</div>
-	<div class="user_details">
-		<div class="user_detail_upper">
-			<div id="name_{{user.id}}" class="username"> {{user.username}}</div>
-			<div id="last_seen{{user.id}}" class="user_last_seen"> {{user.last_seen}}</div>	
-		</div>
-		<div id= "last_message_{{user.id}}" class="user_last_message">
+<div data-id="{{user.id}}" class="friendcard" >
+	
+	<img class= "picture" src="{{url_for('static', filename= 'images/profile_pictures/' + user.profile_picture)}}">
+	<div class="details">
+		
+		<div class="name"> {{user.username}}</div>
+		<div class="lastseen"> {{user.last_seen}}</div>	
+		<div class="last-message">
 			{% if current_user.get_last_message(user.id) %}
 				{% if current_user.get_last_message(user.id)['sender'] == current_user.id %}
 					you: {{current_user.get_last_message(user.id)['message']}}
@@ -17,7 +15,8 @@
 			{% else %}
 				start a conversation
 			{% endif %}
-		</div>					
+		</div>
+
 	</div>
 </div>		
 

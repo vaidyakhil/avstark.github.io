@@ -1,60 +1,42 @@
-.user_card{
+.usercard{
 	display: flex;
-	justify-content: flex-start;
-	margin-right: auto;
+	align-items: center;
 	margin-top: 5px;
 	margin-left: 5px;
+	padding: 5px;
 	background-color: #b5e0ff;
 	height: 120px;
 	width: 98%;
 }
 
-.user_picture{
-	width: 100px;
-	margin-right: 20px;
-	align-self: center;
-}
-
-.user_img{
+.usercard img{
 	width: 60px;
 	height: 60px;
-	border-radius: 50%; 
-	margin: 50px 20px 50px 20px; 
+	border-radius: 50%;
+	margin-right: 20px;
 }
 
-.user_details{
-	display: flex;
-	flex-direction: column; 
-		flex-grow: 1
+.usercard .details{
+	width: 100%;
 }
 
-.user_detail_upper{
-	display: flex;
-}
-
-.username{
+.usercard .name{
 	font-size: medium;
-	margin-right: auto;
-	margin-left: 10px;
-	margin-top: 10px;
-	height: 20px;
-	flex-grow: 1
 	font-weight: bold;
+	display: inline;
 }
-.user_button{
-	font-size: medium;
+
+.usercard .buttons{
 	margin-left: auto;
-	margin-right: 10px;
-	margin-top: 10px;
-	height: 25px;
-	}
+	float: right;
+}
 
 .already_friend{
 	margin-left: auto;
 	margin-top: 10px;
 }
-.user_about{
-	/*background-color: red;*/
+
+.userabout{
 	height: 45px;
 	overflow: hidden;
 	margin-right: auto;
@@ -65,20 +47,19 @@
 
 @media(max-width: 950px){
 
-	.user_picture{
+	.usercard img{
 		width: 60px;
 	}
 
-	.user_img{
+	.picture{
 		width: 40px;
 		height: 40px;
-		margin:60px 10px 60px 10px;
 	}	
 
 }
 
 @media(max-width: 700px){
-	.user_card{
+	.usercard{
 		width: 490px;
 	}
 }

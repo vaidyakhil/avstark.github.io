@@ -16,20 +16,20 @@
 		<img id="profile_photo"  src= "{{url_for('static', filename= 'images/profile_pictures/' + current_user.profile_picture)}}">	
 		<div id="username">{{current_user.username}}</div>
 		<div id="about_me"	class="about">
-		{% if current_user.about_me %}
-		<p>
-			{{current_user.about_me}}
-		</p>
-		{% endif %}
+			{% if current_user.about_me %}
+			<p>
+				{{current_user.about_me}}
+			</p>
+			{% endif %}
 		</div>
 		<div id="edit_form_div">
-			<p style="text-align: center;">Edit Profile</p>
+			<div class="heading">Edit Profile</div>
 			<form id="edit_form" method="POST" action="" enctype="multipart/form-data">
 				<label for="pic_form"> Profile Picture</label>
 				<input type="file" name="pic_form" id="pic_form" style="margin: auto;">
-				<br><br>
+				<br><br><br>
 				<textarea id="about_form" name="about_form"placeholder="Update your introduction"></textarea>
-				<br><br>
+				<br><br><br>
 				<input type="submit" name="submit" value="update">
 			</form>	
 		</div>

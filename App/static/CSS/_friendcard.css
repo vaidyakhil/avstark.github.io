@@ -1,77 +1,56 @@
-.user_card{
+.friendcard{
 	display: flex;
-	justify-content: flex-start;
-	margin-right: auto;
+	align-items: center;
 	margin-top: 5px;
 	margin-left: 5px;
+	margin-right: 2px;
+	padding: 5px;
 	background-color: #b5e0ff;
-	height: 120px;
-	width: 98%;
+	height: 100px;
 }
 
-.user_card:hover{
+.friendcard:hover{
 	background-color:#6aebcd;
 	border: 1px solid black;
 }
 
-.user_picture{
-	display: flex;
-	width: 80px;
-	margin-right: auto;
-	align-self: center;
-	height: 100%;
-}
-
-.user_img{
+.friendcard img{
 	width: 60px;
 	height: 60px;
-	border-radius: 50%; 
-	margin: auto; 
-}
-
-.user_details{
-	margin-left: 10px;
-	display: flex;
-	flex-direction: column; 
-	flex-grow: 1
-}
-.user_detail_upper{
-	display: flex;
-}
-.username{
-	font-size: medium;
-	margin-right: auto;
-	margin-top: 10px;
-	height: 20px;
-	flex-grow: 1;
-}
-.user_last_seen{
-	font-size: small;
-	margin-left: auto;
+	border-radius: 50%;
 	margin-right: 10px;
-	margin-top: 10px;
-	height: 25px;
-	}
-
-.user_last_message{
-	height: 56px;
-	overflow: hidden;
-	margin-right: auto;
-	margin-top: auto;
-	margin-bottom: 10px;
 }
 
-@media(max-width: 750px){
-	.user_picture{
-		width: 60px;
-	}
+.friendcard .details{
+	width: 100%;
+	align-self: flex-start;
+}
 
-	.user_img{
+.friendcard .name{
+	font-size: medium;	
+	display: inline;
+}
+
+.friendcard .lastseen{
+	margin-left: auto;
+	float: right;
+	font-size: small;	
+}
+
+.friendcard .last-message{
+	margin-top: 20px;
+	height: 40px;
+	overflow: hidden; 
+}
+
+@media(max-width: 1000px){
+.friendcard .lastseen{
+			display: none;
+		}	
+}	
+@media(max-width: 750px){
+	.friendcard .picture{
 		width: 45px;
 		height: 45px;
 	}
-
-	.user_last_seen{
-		display: none;
-	}	
 }
